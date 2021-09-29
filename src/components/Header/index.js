@@ -22,10 +22,10 @@ const Header = ({ children }) => {
                         <Link
                             variant="button"
                             color="text.primary"
-                            href="#"
+                            href="/rooms"
                             sx={{ my: 1, mx: 1.5 }}
                         >
-                            Features
+                            Rooms
                         </Link>
                         <Link
                             variant="button"

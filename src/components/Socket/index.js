@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import io from 'socket.io-client';
+import React, { useState, useEffect, useContext } from 'react';
+// import io from 'socket.io-client';
 import BasicModal from '../../components/Modal';
+import { SocketContext } from '../../components/app/context/socketProvider';
 
-const socket = io('localhost:3001');
+// const socket = io('localhost:3001');
 
 function Socket() {
+    const socket = useContext(SocketContext);
     const [isConnected, setIsConnected] = useState(socket.connected);
     const [lastMessage, setLastMessage] = useState(null);
+    
 
     const [open, setOpen] = useState(false);
 
