@@ -48,10 +48,10 @@ function Socket() {
 
     return (
         <div>
-
+{/* 
             <p>Connected: {'' + isConnected}</p>
             <p>Last message: {lastMessage || '-'}</p>
-            <button onClick={sendMessage}>Say hello!</button>
+            <button onClick={sendMessage}>Say hello!</button> */}
             < BasicModal open={open} handleClose={handleClose} />
 
         </div>

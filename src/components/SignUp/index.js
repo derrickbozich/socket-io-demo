@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useContext } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -9,10 +9,14 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
+import { SocketContext } from '../app/context/socketProvider';
+
 
 
 
 const SignUp = ({handleClose}) => {
+    const socket = useContext(SocketContext);
+
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
@@ -20,6 +24,7 @@ const SignUp = ({handleClose}) => {
         console.log({
             name: data.get('firstName'),
         });
+        socket.emit('set userId', { input: data.get('firstName') });
         handleClose();
     };
 

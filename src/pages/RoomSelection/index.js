@@ -8,6 +8,21 @@ const RoomSelection = ({ userId }) => {
     const socket = useContext(SocketContext);
     const history = useHistory();
     const [customRoomId, setCustomRoomId] = useState('');
+    const [isConnected, setIsConnected] = useState(socket.connected);
+
+    useEffect(() => {
+        socket.on('connect', () => {
+            setIsConnected(true);
+        });
+        socket.on('disconnect', () => {
+            setIsConnected(false);
+        });
+      
+        return () => {
+            socket.off('connect');
+            socket.off('disconnect');
+        };
+    });
 
 
 
@@ -19,9 +34,8 @@ const RoomSelection = ({ userId }) => {
 
     return (
 
-        < >
-            user ID: {userId}
-            <br />
+        <>
+            <p>Connected: {'' + isConnected}</p>
             <Grid container direction="row" wrap="wrap">
                 <Grid item xs={6} sm={6} md={6} lg={6} xl={6}>
 

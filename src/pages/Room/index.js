@@ -1,16 +1,27 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import  Chat  from '../../components/Chat'
+import  Socket  from '../../components/Socket'
+// import { SocketContext } from '../../components/app/context/socketProvider';
 
 
 const RoomsPage = ({ userId }) => {
     const { room, roomId } = useParams();
+    // const socket = useContext(SocketContext);
 
 
     return (
         <main>
-            {room}
-            {roomId}
+            <Socket />
+            <p> {room}</p>
+            <p> {roomId}</p>
+            <p> {userId}</p>
+           
+           
+            
+           
+            <Chat />
 
         </main>
     );

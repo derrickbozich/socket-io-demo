@@ -16,6 +16,11 @@ io.on('connection', socket => {
     console.log(`hello from ${socket.id}`);
   });
 
+  socket.on('set userId', ({input}) => {
+    console.log(`set user id: hello from ${input}`);
+    io.to(socket.id).emit('set userId', input);
+  });
+
   socket.on('disconnect', () => {
     console.log(`disconnect: ${socket.id}`);
   });
@@ -50,6 +55,41 @@ io.on('connection', socket => {
     const users = rooms[roomId];
 
     io.in(roomId).emit('state from server', users);
+  });
+
+  socket.on('set color', ({ roomId, user }) => {
+    rooms[roomId] = {
+      ...rooms[roomId],
+      ...user,
+    };
+
+    const users = rooms[roomId];
+    io.in(roomId).emit('state from server', users);
+  });
+
+  socket.on('transmit mouse', (room, data) => {
+    io.in(room).emit('mouse response', data);
+  });
+
+  socket.on('begin', (room) => {
+    roomNumber++;
+    io.in(room).emit('close modal');
+  });
+
+  socket.on('clear all', room => {
+    io.in(room).emit('clear all server');
+  });
+
+  socket.on('client chat', ({ input, color }, socketRoom) => {
+    io.in(socketRoom).emit('server chat', { input, color });
+  });
+
+  socket.on('add object', (socketRoom, data) => {
+    io.in(socketRoom).emit('emit add object', data);
+  });
+
+  socket.on('undo', (socketRoom) => {
+    io.in(socketRoom).emit('undo last');
   });
 });
 

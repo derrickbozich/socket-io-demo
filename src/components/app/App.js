@@ -10,7 +10,6 @@ import Layout from '../Layout';
 import Home from '../../pages/Home';
 import RoomSelection from '../../pages/RoomSelection';
 import Room from '../../pages/Room';
-import Socket from '../Socket';
 import { SocketContext, socket } from './context/socketProvider';
 
 
@@ -31,7 +30,6 @@ export default function App() {
         <Switch>
           <Route exact path="/rooms">
             <SocketContext.Provider value={socket}>
-              <Socket />
               <RoomSelection userId={userId} />
             </SocketContext.Provider>
           </Route>
