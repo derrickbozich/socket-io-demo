@@ -9,7 +9,6 @@ const RoomsPage = ({ userId }) => {
 
     return (
         <main>
-            YOOO
             {room}
             {roomId}
 

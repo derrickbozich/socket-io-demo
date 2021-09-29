@@ -24,34 +24,27 @@ export default function App() {
   }, []);
   return (
     < Layout>
-
-
       <Router>
-        <div>
-
-          <Switch>
-            <Route exact path="/" component={Home} />
-          </Switch>
-          <Switch>
-            <Route exact path="/rooms">
-              <SocketContext.Provider value={socket}>
-                <Socket />
-                <RoomSelection userId={userId} />
-              </SocketContext.Provider>
-            </Route>
+        <Switch>
+          <Route exact path="/" component={Home} />
+        </Switch>
+        <Switch>
+          <Route exact path="/rooms">
             <SocketContext.Provider value={socket}>
-              <Route exact path="/rooms/:room">
-                <Room userId={userId} />
-              </Route>
-              <Route exact path="/rooms/:room/:roomId">
-                <Room userId={userId} />
-              </Route>
+              <Socket />
+              <RoomSelection userId={userId} />
             </SocketContext.Provider>
-          </Switch>
-        </div>
+          </Route>
+          <SocketContext.Provider value={socket}>
+            <Route exact path="/rooms/:room">
+              <Room userId={userId} />
+            </Route>
+            <Route exact path="/rooms/:room/:roomId">
+              <Room userId={userId} />
+            </Route>
+          </SocketContext.Provider>
+        </Switch>
       </Router>
-
     </Layout>
-
   );
 }
