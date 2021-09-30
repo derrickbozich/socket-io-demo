@@ -8,9 +8,36 @@ const io = require('socket.io')({
   }
 });
 
+// On the server-side, we register a middleware which 
+// checks the username and allows the connection:
+
+io.use((socket, next) => {
+  const username = socket.handshake.auth.username;
+  if (!username) {
+    return next(new Error("invalid username"));
+  }
+  socket.username = username;
+  next();
+});
+
 io.on('connection', socket => {
   console.log(`connect yo: ${socket.id}`);
-  io.to(socket.id).emit('set userId', socket.id);
+  // io.to(socket.id).emit('set userId', socket.id);
+
+  const users = [];
+  for (let [id, socket] of io.of("/").sockets) {
+    users.push({
+      userID: id,
+      username: socket.username,
+    });
+  }
+  socket.emit("users", users);
+
+  // notify existing users
+  socket.broadcast.emit("user connected", {
+    userID: socket.id,
+    username: socket.username,
+  });
 
   socket.on('hello!', () => {
     console.log(`hello from ${socket.id}`);
@@ -80,8 +107,8 @@ io.on('connection', socket => {
     io.in(room).emit('clear all server');
   });
 
-  socket.on('client chat', ({ input, color }, socketRoom) => {
-    io.in(socketRoom).emit('server chat', { input, color });
+  socket.on('client chat', ({ input }, socketRoom) => {
+    io.in(socketRoom).emit('server chat', { input });
   });
 
   socket.on('add object', (socketRoom, data) => {
@@ -95,6 +122,6 @@ io.on('connection', socket => {
 
 io.listen(3001);
 
-setInterval(() => {
-  io.emit('message', new Date().toISOString());
-}, 1000);
+// setInterval(() => {
+//   io.emit('message', new Date().toISOString());
+// }, 1000);

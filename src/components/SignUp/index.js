@@ -2,9 +2,6 @@ import React, { useContext } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-// import FormControlLabel from '@mui/material/FormControlLabel';
-// import Checkbox from '@mui/material/Checkbox';
-// import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
@@ -24,8 +21,10 @@ const SignUp = ({handleClose}) => {
         console.log({
             name: data.get('firstName'),
         });
-        socket.emit('set userId', { input: data.get('firstName') });
-        handleClose();
+        // socket.emit('set userId', { input: data.get('firstName') });
+        socket.auth = { username: data.get('firstName')  };
+        socket.connect();
+        // handleClose();
     };
 
     return (
@@ -41,7 +40,7 @@ const SignUp = ({handleClose}) => {
                 <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-                Sign up
+                Set Your Nickname
             </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
                 <Grid container spacing={2}>
@@ -50,10 +49,10 @@ const SignUp = ({handleClose}) => {
                         <TextField
                             autoComplete="fname"
                             name="firstName"
-                            required
+                         
                             fullWidth
                             id="firstName"
-                            label="First Name"
+                            label="Nickname"
                             autoFocus
                         />
                     </Grid>
@@ -66,7 +65,7 @@ const SignUp = ({handleClose}) => {
                     variant="contained"
                     sx={{ mt: 3, mb: 2 }}
                 >
-                    Sign Up
+                    Submit
                 </Button>
                
             </Box>

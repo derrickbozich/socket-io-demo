@@ -2,54 +2,35 @@ import React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 
 const Header = ({ children }) => {
     return (
         <>
-            <AppBar
-                position="static"
-                color="default"
-                elevation={0}
-                sx={{ borderBottom: (theme) => `1px solid ${theme.palette.divider}` }}
-            >
-                <Toolbar sx={{ flexWrap: 'wrap' }}>
-                    
-                    <Typography variant="h6" color="inherit" noWrap sx={{ flexGrow: 1 }}>
-                        Web Socket Demo
-                    </Typography>
-                    <nav>
-                        <Link
-                            variant="button"
-                            color="text.primary"
-                            href="/rooms"
-                            sx={{ my: 1, mx: 1.5 }}
+            <Box sx={{ flexGrow: 1 }}>
+                <AppBar position="static">
+                    <Toolbar>
+                        <IconButton
+                            size="large"
+                            edge="start"
+                            color="inherit"
+                            aria-label="menu"
+                            sx={{ mr: 2 }}
                         >
-                            Rooms
-                        </Link>
-                        <Link
-                            variant="button"
-                            color="text.primary"
-                            href="#"
-                            sx={{ my: 1, mx: 1.5 }}
-                        >
-                            Enterprise
-                        </Link>
-                        <Link
-                            variant="button"
-                            color="text.primary"
-                            href="#"
-                            sx={{ my: 1, mx: 1.5 }}
-                        >
-                            Support
-                        </Link>
-                    </nav>
-                    <Button href="#" variant="outlined" sx={{ my: 1, mx: 1.5 }}>
-                        Login
-                    </Button>
-                </Toolbar>
-            </AppBar>
+                            <MenuIcon />
+                        </IconButton>
+                        <Button href='/' variant='h3' color="inherit">Web Socket Demo</Button>
+                        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                            {/* Web Socket Demo */}
+                        </Typography>
+                        <Button href='/rooms' color="inherit">Rooms</Button>
+                    </Toolbar>
+                </AppBar>
+            </Box>
         </>
     )
 }

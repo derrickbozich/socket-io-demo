@@ -32,10 +32,6 @@ export default function NestedModal({ open, handleClose }) {
                 aria-describedby="parent-modal-description"
             >
                 <Box sx={{ ...style, width: 400 }}>
-                    <h2 id="parent-modal-title">Choose Your Name</h2>
-                    <p id="parent-modal-description">
-                        Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-                    </p>
                     <SignUp handleClose={handleClose} />
                 </Box>
             </Modal>

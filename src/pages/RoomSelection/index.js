@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { Grid, Button } from '@material-ui/core/';
 import { SocketContext } from '../../components/app/context/socketProvider';
+import SignUp from '../../components/SignUp';
+import Chat from '../../components/Chat';
+
 
 const RoomSelection = ({ userId }) => {
     const socket = useContext(SocketContext);
@@ -17,7 +20,7 @@ const RoomSelection = ({ userId }) => {
         socket.on('disconnect', () => {
             setIsConnected(false);
         });
-      
+
         return () => {
             socket.off('connect');
             socket.off('disconnect');
@@ -36,21 +39,15 @@ const RoomSelection = ({ userId }) => {
 
         <>
             <p>Connected: {'' + isConnected}</p>
+            <SignUp />
             <Grid container direction="row" wrap="wrap">
                 <Grid item xs={6} sm={6} md={6} lg={6} xl={6}>
 
                     <Button href='/rooms/solo' variant="outlined" sx={{ my: 1, mx: 1.5 }}>
-                        Handle Solo
+                        Solo Room
                     </Button>
                 </Grid>
                 <Grid item xs={6} sm={6} md={6} lg={6} xl={6}>
-
-                    <Button onClick={(e) => {
-                        handleCollabJoin(e, customRoomId);
-                    }} variant="outlined" sx={{ my: 1, mx: 1.5 }}>
-                        Handle Collab Join
-                    </Button>
-
                     <form
                         style={{ display: 'flex' }}
                         onSubmit={(e) => {
@@ -64,8 +61,17 @@ const RoomSelection = ({ userId }) => {
                             onChange={(e) => setCustomRoomId(e.target.value)}
                         />
                     </form>
+
+                    <Button onClick={(e) => {
+                        handleCollabJoin(e, customRoomId);
+                    }} variant="outlined" sx={{ my: 1, mx: 1.5 }}>
+                        Collaborative Room
+                    </Button>
+
+
                 </Grid>
             </Grid>
+            < Chat />
         </>
 
     );
