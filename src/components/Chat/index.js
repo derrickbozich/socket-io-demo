@@ -19,11 +19,7 @@ const Chat = () => {
     const [selectedUser, setSelectedUser] = useState(null);
     const [isConnected, setIsConnected] = useState(false);
 
-
-
-
     useEffect(() => {
-
 
         socket.on("users", (users) => {
             users.forEach((user) => {
@@ -39,8 +35,6 @@ const Chat = () => {
             });
             setUsers(users);
             // console.log(users)
-
-
         });
 
         socket.on("user connected", (user) => {
@@ -116,7 +110,15 @@ const Chat = () => {
     };
 
     const handleUserSelect = e => {
-        console.log('SELECTED A USER');
+        
+
+        const selectedUser = users.find(user => {
+            return user.userID === e.currentTarget.id
+        })
+
+        setSelectedUser(selectedUser);
+
+        console.log('SELECTED A USER', selectedUser);
     }
 
     const handleMessage = (content) => {
@@ -125,10 +127,11 @@ const Chat = () => {
                 content,
                 to: selectedUser.userID,
             });
-            selectedUser.messages.push({
-                content,
-                fromSelf: true,
-            });
+            console.log('private message', content)
+            // selectedUser.messages.push({
+            //     content,
+            //     fromSelf: true,
+            // });
         }
     }
 
@@ -152,6 +155,7 @@ const Chat = () => {
                 type="submit"
                
                
+               
             >
                 send
             </Button>
@@ -164,8 +168,8 @@ const Chat = () => {
         <div>
 
             <List>
-                {users.map(({ username, self, connected }, index) => (
-                    <ListItem button key={index} onClick={handleUserSelect}>
+                {users.map(({ username, self, connected, userID }, index) => (
+                    <ListItem button key={index} id={userID} onClick={handleUserSelect}>
                         <ListItemIcon>
                             < PersonOutlineIcon />
                         </ListItemIcon>
