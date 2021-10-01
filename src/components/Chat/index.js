@@ -22,9 +22,9 @@ const Chat = () => {
     useEffect(() => {
 
         socket.on("users", (users) => {
+
             users.forEach((user) => {
                 user.self = user.userID === socket.id;
-                // initReactiveProperties(user);
             });
             // put the current user first, and then sort by username
             users = users.sort((a, b) => {
@@ -34,61 +34,72 @@ const Chat = () => {
                 return a.username > b.username ? 1 : 0;
             });
             setUsers(users);
-            // console.log(users)
         });
 
         socket.on("user connected", (user) => {
-            // initReactiveProperties(user);
+            // console.log('user connected', user)
             setUsers(prevUsers => [...prevUsers, user]);
+        });
+        socket.on("user disconnected", (userID) => {
+            // console.log('user connected', user)
+            // let arr = [...users]
+
+            const arr = users.filter(function (tempUser) {
+                return tempUser.userID !== userID
+            })
+            setUsers(arr);
         });
 
         socket.on("connect", () => {
-            console.log('CONNECTED')
-            let newArr = [...users]; // copying the old datas array
+            // let newArr = [...users]; // copying the old datas array
 
-            newArr.forEach((user) => {
-                if (user.self) {
-                    user.connected = true;
-                }
-            });
+            // newArr.forEach((user) => {
+            //     if (user.self) {
+            //         user.connected = true;
+            //     }
+            // });
 
-            setUsers(newArr);
+            // console.log('connect', newArr)
+
+            // setUsers(newArr);
             setIsConnected(true);
-            // console.log('update users arr', users)
-
 
         });
 
-        socket.on("disconnect", () => {
-            let newArr = [...users]; // copying the old datas array
+        // socket.on("disconnect", () => {
+        //     let newArr = [...users]; // copying the old datas array
 
-            newArr.forEach((user) => {
-                if (user.self) {
-                    user.connected = false;
-                }
-            });
+        //     newArr.forEach((user) => {
+        //         if (user.self) {
+        //             user.connected = false;
+        //         }
+        //     });
 
-            setUsers(newArr);
-            setIsConnected(false);
-            // console.log('update users arr', users)
+        //     setUsers(newArr);
+        //     setIsConnected(false);
 
-        });
+        // });
 
-        socket.on("private message", ({ content, from }) => {
-            for (let i = 0; i < users.length; i++) {
-                const user = users[i];
-                if (user.userID === from) {
-                    user.messages.push({
-                        content,
-                        fromSelf: false,
-                    });
-                    if (user !== selectedUser) {
-                        user.hasNewMessages = true;
-                    }
-                    break;
-                }
-            }
-        });
+        // socket.on("private message", ({ content, from }) => {
+        //     const usersClone = [...users]
+           
+
+        //     usersClone.forEach((user) => {
+        //         if (user.userID === from) {
+        //             user.messages.push({
+        //                 content,
+        //                 fromSelf: false,
+        //             });
+        //             if (user !== selectedUser) {
+        //                 user.hasNewMessages = true;  s
+        //             }
+        //             return;
+        //         }
+        //     })
+
+        //     setUsers(usersClone);
+            
+        // });
 
 
 
@@ -96,42 +107,64 @@ const Chat = () => {
             socket.off('connect');
             socket.off('disconnect');
         };
-    }, [socket, users, selectedUser]);
+    }, [socket]);
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log('client chat', input, socket.currentRoom)
-        socket.emit('client chat', { input }, socket.currentRoom);
-        setInput('');
-    };
+    // const handleSubmit = (e) => {
+    //     e.preventDefault();
+    //     // console.log('client chat', input, socket.currentRoom)
+    //     socket.emit('client chat', { input }, socket.currentRoom);
+    //     setInput('');
+    // };
 
     const handleInputChange = (e) => {
         setInput(e.target.value);
     };
 
-    const handleUserSelect = e => {
-        
-
-        const selectedUser = users.find(user => {
-            return user.userID === e.currentTarget.id
+    const findUser = (id, users) => {
+        return users.find(user => {
+            return user.userID === id
         })
-
-        setSelectedUser(selectedUser);
-
-        console.log('SELECTED A USER', selectedUser);
     }
 
-    const handleMessage = (content) => {
+    const handleUserSelect = e => {
+
+
+        const selectedUser = findUser(e.currentTarget.id, users)
+
+
+
+        setSelectedUser(selectedUser);
+    }
+
+    const handleMessage = () => {
         if (selectedUser) {
             socket.emit("private message", {
-                content,
+                input,
                 to: selectedUser.userID,
             });
-            console.log('private message', content)
+            console.log('private message', input, selectedUser)
+            let usersClone = [...users];
+            // usersClone[]
+
+            let tempUser = findUser(selectedUser.userID, users)
+            tempUser.messages.push({
+                input,
+                fromSelf: true,
+            })
+
+            console.log('users clone', usersClone, tempUser)
+            // setInput('');
+
+
+
+
+
+            // userClone
             // selectedUser.messages.push({
             //     content,
             //     fromSelf: true,
             // });
+
         }
     }
 
@@ -145,23 +178,19 @@ const Chat = () => {
             autoComplete="off"
             onChange={handleInputChange}
             value={input}
-            onSubmit={handleSubmit}
+
         >
             <TextField id="outlined-basic" label="Outlined" variant="outlined" />
             <Button
-
-             
                 variant="outlined"
-                type="submit"
-               
-               
-               
+                // type="submit"
+                onClick={handleMessage}
             >
                 send
             </Button>
-        
+
         </Box>
-       
+
 
 
     const usersList = (
@@ -169,7 +198,7 @@ const Chat = () => {
 
             <List>
                 {users.map(({ username, self, connected, userID }, index) => (
-                    <ListItem button key={index} id={userID} onClick={handleUserSelect}>
+                    <ListItem button key={index} id={userID} onClick={handleUserSelect} selected={selectedUser && selectedUser.userID === userID}>
                         <ListItemIcon>
                             < PersonOutlineIcon />
                         </ListItemIcon>
@@ -177,10 +206,29 @@ const Chat = () => {
                             <Typography variant="body1">
                                 {username}
                                 {self ? " (yourself)" : ''}
-                                {connected}
+
+                            </Typography>
+                            <Typography variant="body1">
+
+                                {connected ? 'Online' : "Offline"}
                             </Typography>
                         </ListItemText>
                     </ListItem>
+                ))}
+            </List>
+
+
+
+        </div>
+    );
+    const messages = (
+        <div>
+
+            <List>
+                {selectedUser && selectedUser.messages.map((message, index) => (
+                    <>
+                        <h1>Message</h1>
+                    </>
                 ))}
             </List>
 
@@ -192,7 +240,7 @@ const Chat = () => {
 
     return (
         <Drawer usersList={usersList}>
-            Connected: {`${isConnected}`}
+            {/* Connected: {`${isConnected}`} */}
             {isConnected === false && <SignUp />}
             {isConnected === true && textInput}
         </Drawer>
