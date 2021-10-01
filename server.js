@@ -39,6 +39,13 @@ io.on('connection', socket => {
     username: socket.username,
   });
 
+  socket.on("private message", ({ content, to }) => {
+    socket.to(to).emit("private message", {
+      content,
+      from: socket.id,
+    });
+  });
+
   socket.on('hello!', () => {
     console.log(`hello from ${socket.id}`);
   });

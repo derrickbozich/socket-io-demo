@@ -1,36 +1,100 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Button, TextField, Typography } from '@material-ui/core';
-import styles from './main.css';
+import { Button, TextField } from '@material-ui/core';
 import { SocketContext } from '../app/context/socketProvider';
+import Drawer from '../Drawer';
+import SignUp from '../SignUp';
 
 const Chat = () => {
-    const [input, setInput] = useState('');
-    const [display, setDisplay] = useState([]);
-
     const socket = useContext(SocketContext);
+    const [input, setInput] = useState('');
+    const [users, setUsers] = useState([]);
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [isConnected, setIsConnected] = useState(false);
+
+
+
 
     useEffect(() => {
-        socket.on('server chat', (msg) => {
-            console.log('server chat', msg)
-            setDisplay((prev) => {
-                return [...prev, msg];
-            });
-        });
+
+
         socket.on("users", (users) => {
             users.forEach((user) => {
-                // user.self = user.userID === socket.id;
+                user.self = user.userID === socket.id;
                 // initReactiveProperties(user);
-                console.log(user)
             });
             // put the current user first, and then sort by username
-            // this.users = users.sort((a, b) => {
-            //     if (a.self) return -1;
-            //     if (b.self) return 1;
-            //     if (a.username < b.username) return -1;
-            //     return a.username > b.username ? 1 : 0;
-            // });
+            users = users.sort((a, b) => {
+                if (a.self) return -1;
+                if (b.self) return 1;
+                if (a.username < b.username) return -1;
+                return a.username > b.username ? 1 : 0;
+            });
+            setUsers(users);
+            // console.log(users)
+
+
         });
-    }, []);
+
+        socket.on("user connected", (user) => {
+            // initReactiveProperties(user);
+            setUsers(prevUsers => [...prevUsers, user]);
+        });
+
+        socket.on("connect", () => {
+            console.log('CONNECTED')
+            let newArr = [...users]; // copying the old datas array
+
+            newArr.forEach((user) => {
+                if (user.self) {
+                    user.connected = true;
+                }
+            });
+
+            setUsers(newArr);
+            setIsConnected(true);
+            // console.log('update users arr', users)
+
+
+        });
+
+        socket.on("disconnect", () => {
+            let newArr = [...users]; // copying the old datas array
+
+            newArr.forEach((user) => {
+                if (user.self) {
+                    user.connected = false;
+                }
+            });
+
+            setUsers(newArr);
+            setIsConnected(false);
+            // console.log('update users arr', users)
+
+        });
+
+        socket.on("private message", ({ content, from }) => {
+            for (let i = 0; i < users.length; i++) {
+                const user = users[i];
+                if (user.userID === from) {
+                    user.messages.push({
+                        content,
+                        fromSelf: false,
+                    });
+                    if (user !== selectedUser) {
+                        user.hasNewMessages = true;
+                    }
+                    break;
+                }
+            }
+        });
+
+
+
+        return () => {
+            socket.off('connect');
+            socket.off('disconnect');
+        };
+    }, [socket, users, selectedUser]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -42,24 +106,33 @@ const Chat = () => {
     const handleInputChange = (e) => {
         setInput(e.target.value);
     };
+
+    const handleMessage = (content) => {
+        if (selectedUser) {
+            socket.emit("private message", {
+                content,
+                to: selectedUser.userID,
+            });
+            selectedUser.messages.push({
+                content,
+                fromSelf: true,
+            });
+        }
+    }
+
+
     return (
-        <div className={styles.chatDivWrapper}>
-            <ul className={styles.chatUl}>
-                {display.map(({ input }, i) => {
-                    return (
-                        <li
-                            key={i}
-                            className={
-                                i < display.length - 5
-                                    ? styles.chatFloat
-                                    : styles.chatMessages
-                            }
-                        >
-                            <Typography variant="body1">{input}</Typography>
-                        </li>
-                    );
-                })}
-            </ul>
+
+        <Drawer users={users}>
+
+
+
+            Connected: {`${isConnected}`}
+            {isConnected === false && <SignUp />}
+
+
+
+            
 
             <form onSubmit={handleSubmit}>
                 <TextField
@@ -86,7 +159,13 @@ const Chat = () => {
                     send
                 </Button>
             </form>
-        </div>
+
+        </Drawer>
+
+
+
+
+
     );
 };
 
