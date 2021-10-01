@@ -3,6 +3,14 @@ import { Button, TextField } from '@material-ui/core';
 import { SocketContext } from '../app/context/socketProvider';
 import Drawer from '../Drawer';
 import SignUp from '../SignUp';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+
 
 const Chat = () => {
     const socket = useContext(SocketContext);
@@ -107,6 +115,10 @@ const Chat = () => {
         setInput(e.target.value);
     };
 
+    const handleUserSelect = e => {
+        console.log('SELECTED A USER');
+    }
+
     const handleMessage = (content) => {
         if (selectedUser) {
             socket.emit("private message", {
@@ -120,52 +132,66 @@ const Chat = () => {
         }
     }
 
+    const textInput =
+        <Box
+            component="form"
+            sx={{
+                '& > :not(style)': { m: 1, width: '25ch' },
+            }}
+            noValidate
+            autoComplete="off"
+            onChange={handleInputChange}
+            value={input}
+            onSubmit={handleSubmit}
+        >
+            <TextField id="outlined-basic" label="Outlined" variant="outlined" />
+            <Button
+
+             
+                variant="outlined"
+                type="submit"
+               
+               
+            >
+                send
+            </Button>
+        
+        </Box>
+       
+
+
+    const usersList = (
+        <div>
+
+            <List>
+                {users.map(({ username, self, connected }, index) => (
+                    <ListItem button key={index} onClick={handleUserSelect}>
+                        <ListItemIcon>
+                            < PersonOutlineIcon />
+                        </ListItemIcon>
+                        <ListItemText >
+                            <Typography variant="body1">
+                                {username}
+                                {self ? " (yourself)" : ''}
+                                {connected}
+                            </Typography>
+                        </ListItemText>
+                    </ListItem>
+                ))}
+            </List>
+
+
+
+        </div>
+    );
+
 
     return (
-
-        <Drawer users={users}>
-
-
-
+        <Drawer usersList={usersList}>
             Connected: {`${isConnected}`}
             {isConnected === false && <SignUp />}
-
-
-
-            
-
-            <form onSubmit={handleSubmit}>
-                <TextField
-                    style={{ marginRight: '1rem', paddingTop: '1.3rem' }}
-                    margin="none"
-                    variant="standard"
-                    onChange={handleInputChange}
-                    value={input}
-                    type="text"
-                    placeholder="chat input"
-                ></TextField>
-                <Button
-                    style={{
-                        height: '56px',
-                        marginRight: '1rem',
-                        marginBottom: '1rem',
-                        border: 'none',
-                    }}
-                    size="large"
-                    variant="outlined"
-                    type="submit"
-                    disabled={!input}
-                >
-                    send
-                </Button>
-            </form>
-
+            {isConnected === true && textInput}
         </Drawer>
-
-
-
-
-
     );
 };
 

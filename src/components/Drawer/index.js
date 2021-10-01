@@ -2,49 +2,39 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
-import IconButton from '@mui/material/IconButton';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import MailIcon from '@mui/icons-material/Mail';
-import MenuIcon from '@mui/icons-material/Menu';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
+
 
 const drawerWidth = 240;
 
 function ResponsiveDrawer(props) {
-    const { users, children } = props;
+    const { usersList, children } = props;
     // console.log(users);
    
 
-    const drawer = (
-        <div>
+    // const drawer = (
+    //     <div>
 
-            <List>
-                {users.map(({ username, self, connected }, index) => (
-                    <ListItem button key={index}>
-                        <ListItemIcon>
-                            < PersonOutlineIcon />
-                        </ListItemIcon>
-                        <ListItemText >
-                            <Typography variant="body1">
-                                {username}
-                                {self ? " (yourself)" : ''}
-                                {connected}
-                            </Typography>
-                        </ListItemText>
-                    </ListItem>
-                ))}
-            </List>
+    //         <List>
+    //             {users.map(({ username, self, connected }, index) => (
+    //                 <ListItem button key={index}>
+    //                     <ListItemIcon>
+    //                         < PersonOutlineIcon />
+    //                     </ListItemIcon>
+    //                     <ListItemText >
+    //                         <Typography variant="body1">
+    //                             {username}
+    //                             {self ? " (yourself)" : ''}
+    //                             {connected}
+    //                         </Typography>
+    //                     </ListItemText>
+    //                 </ListItem>
+    //             ))}
+    //         </List>
 
 
 
-        </div>
-    );
+    //     </div>
+    // );
 
 
     return (
@@ -63,7 +53,7 @@ function ResponsiveDrawer(props) {
                     }}
                     open
                 >
-                    {drawer}
+                    {usersList}
                 </Drawer>
             </Box>
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
