@@ -17,25 +17,20 @@ io.use((socket, next) => {
 });
 
 io.on('connection', socket => {
+  
+  socket.onAny((event, ...args) => {
+    console.log(event, args);
+  });
 
 
   // notify existing users
   socket.broadcast.emit("user connected", {
+  // socket.emit("user connected", {
     userID: socket.userID,
     username: socket.username,
     connected: true,
     messages: [],
   });
-
-  socket.on("private message", ({ content, to }) => {
-    const message = {
-      content,
-      from: socket.userID,
-      to,
-    };
-    socket.to(to).to(socket.userID).emit("private message", message);
-  });
-
 
   const users = [];
   for (let [id, socket] of io.of("/").sockets) {
@@ -48,21 +43,12 @@ io.on('connection', socket => {
   }
   socket.emit("users", users);
 
-
-
-
-
-
   // notify users upon disconnection
   socket.on("disconnect", () => {
-    // const matchingSockets = await io.in(socket.userID).allSockets();
-    // const isDisconnected = matchingSockets.size === 0;
-    // if (isDisconnected) {
-    //   // notify other users
-    //   socket.broadcast.emit("user disconnected", socket.userID);
-    // }
+    // console.log('disconnect', socket.id)
 
-    socket.broadcast.emit("user disconnected", socket.userID);
+    socket.broadcast.emit("user disconnected", socket.id);
+
   });
 
 });

@@ -37,17 +37,20 @@ const Chat = () => {
         });
 
         socket.on("user connected", (user) => {
+            // socket.emit('get users');
             // console.log('user connected', user)
-            setUsers(prevUsers => [...prevUsers, user]);
+            // setUsers(prevUsers => [...prevUsers, user]);
         });
         socket.on("user disconnected", (userID) => {
-            // console.log('user connected', user)
+            // socket.emit('get users');
+            // console.log('user disconnected', userID)
             // let arr = [...users]
 
-            const arr = users.filter(function (tempUser) {
-                return tempUser.userID !== userID
-            })
-            setUsers(arr);
+            // const arr = users.filter(function (tempUser) {
+            //     return tempUser.userID !== userID
+            // })
+            // console.log('new users', arr)
+            // setUsers(arr);
         });
 
         socket.on("connect", () => {
@@ -62,6 +65,7 @@ const Chat = () => {
             // console.log('connect', newArr)
 
             // setUsers(newArr);
+            // socket.emit('get users');
             setIsConnected(true);
 
         });
@@ -107,7 +111,7 @@ const Chat = () => {
             socket.off('connect');
             socket.off('disconnect');
         };
-    }, [socket]);
+    }, [socket, users]);
 
     // const handleSubmit = (e) => {
     //     e.preventDefault();
@@ -119,6 +123,12 @@ const Chat = () => {
     const handleInputChange = (e) => {
         setInput(e.target.value);
     };
+
+    // const handleDisconnect = (e) => {
+    //     // setInput(e.target.value);
+    //     console.log('disconnect client', socket.id)
+    //     // socket.emit('disconnect');
+    // };
 
     const findUser = (id, users) => {
         return users.find(user => {
@@ -242,7 +252,14 @@ const Chat = () => {
         <Drawer usersList={usersList}>
             {/* Connected: {`${isConnected}`} */}
             {isConnected === false && <SignUp />}
-            {isConnected === true && textInput}
+            {/* {isConnected === true && textInput} */}
+            {/* <Button
+                variant="outlined"
+                // type="submit"
+                onClick={handleDisconnect}
+            >
+                Disconnect
+            </Button> */}
         </Drawer>
     );
 };
