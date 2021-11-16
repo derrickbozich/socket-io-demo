@@ -26,14 +26,10 @@ export default function App() {
       <Router>
         <Switch>
           <Route exact path="/" component={Home} />
-        </Switch>
-        <Switch>
-          <Route exact path="/rooms">
-            <SocketContext.Provider value={socket}>
-              <RoomSelection userId={userId} />
-            </SocketContext.Provider>
-          </Route>
           <SocketContext.Provider value={socket}>
+            <Route exact path="/rooms">
+              <RoomSelection userId={userId} />
+            </Route>
             <Route exact path="/rooms/:room">
               <Room userId={userId} />
             </Route>

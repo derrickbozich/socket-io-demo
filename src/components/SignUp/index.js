@@ -17,14 +17,8 @@ const SignUp = ({handleClose}) => {
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        // eslint-disable-next-line no-console
-        // console.log({
-        //     name: data.get('firstName'),
-        // });
-        // socket.emit('set userId', { input: data.get('firstName') });
         socket.auth = { username: data.get('firstName')  };
         socket.connect();
-        // handleClose();
     };
 
     return (

@@ -1,17 +1,23 @@
 import React from 'react';
-import Chat from '../../components/Chat';
+import PropTypes from 'prop-types';
+import { useParams } from 'react-router-dom';
+import Chat from '../../components/Chat'
 
-
-const RoomSelection = () => {
+const RoomSelection = ({ userId }) => {
+    const { room, roomId } = useParams();
 
     return (
-        <>
-            < Chat />
-        </>
+        <main>
+            <p> room:  {room}</p>
+            <p> {roomId}</p>
+            <p> {userId}</p>
+            <Chat />
 
+        </main>
     );
 };
 
-
-
+RoomSelection.propTypes = {
+    userId: PropTypes.string.isRequired,
+};
 export default RoomSelection;
