@@ -8,34 +8,7 @@ const drawerWidth = 240;
 
 function ResponsiveDrawer(props) {
     const { usersList, children } = props;
-    // console.log(users);
-   
-
-    // const drawer = (
-    //     <div>
-
-    //         <List>
-    //             {users.map(({ username, self, connected }, index) => (
-    //                 <ListItem button key={index}>
-    //                     <ListItemIcon>
-    //                         < PersonOutlineIcon />
-    //                     </ListItemIcon>
-    //                     <ListItemText >
-    //                         <Typography variant="body1">
-    //                             {username}
-    //                             {self ? " (yourself)" : ''}
-    //                             {connected}
-    //                         </Typography>
-    //                     </ListItemText>
-    //                 </ListItem>
-    //             ))}
-    //         </List>
-
-
-
-    //     </div>
-    // );
-
+    
 
     return (
         <Box sx={{ display: 'flex' }}>

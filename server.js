@@ -46,69 +46,70 @@ io.on('connection', (socket) => {
   
   io.emit("users", getConnectedUsers());
 
-  // // when the client emits 'new message', this listens and executes
-  // socket.on('new message', (data) => {
-  //   // we tell the client to execute 'new message'
-  //   socket.broadcast.emit('new message', {
-  //     username: socket.username,
-  //     message: data
-  //   });
-  // });
+  // when the client emits 'new message', this listens and executes
+  socket.on('new message', (data) => {
+    console.log('new message', data)
+    // we tell the client to execute 'new message'
+    io.emit('new message', {
+      username: socket.username,
+      message: data
+    });
+  });
 
-  // // when the client emits 'private message', this listens and executes
-  // socket.on('private message', (data) => {
-  //   // we tell the client to execute 'new message'
-  //   // socket.broadcast.emit('new message', {
-  //   //   username: socket.username,
-  //   //   message: data
-  //   // });
-  //   console.log('in private message', data)
-  // });
+  // when the client emits 'private message', this listens and executes
+  socket.on('private message', (data) => {
+    // we tell the client to execute 'new message'
+    // socket.broadcast.emit('new message', {
+    //   username: socket.username,
+    //   message: data
+    // });
+    console.log('in private message', data)
+  });
 
-  // // when the client emits 'add user', this listens and executes
-  // socket.on('add user', (username) => {
+  // when the client emits 'add user', this listens and executes
+  socket.on('add user', (username) => {
 
-  //   // we store the username in the socket session for this client
-  //   socket.username = username;
-  //   ++numUsers;
+    // we store the username in the socket session for this client
+    socket.username = username;
+    ++numUsers;
 
-  //   socket.emit('login', {
-  //     numUsers: numUsers
-  //   });
+    socket.emit('login', {
+      numUsers: numUsers
+    });
     
-  //   // echo globally (all clients) that a person has connected
-  //   socket.broadcast.emit('user joined', {
-  //     username: socket.username,
-  //     numUsers: numUsers,
-  //     id: socket.id
-  //   });
-  //   // Refresh users
-  //   socket.emit("users", getConnectedUsers());
-  // });
+    // echo globally (all clients) that a person has connected
+    socket.broadcast.emit('user joined', {
+      username: socket.username,
+      numUsers: numUsers,
+      id: socket.id
+    });
+    // Refresh users
+    socket.emit("users", getConnectedUsers());
+  });
 
-  // // when the client emits 'typing', we broadcast it to others
-  // socket.on('typing', () => {
-  //   socket.broadcast.emit('typing', {
-  //     username: socket.username
-  //   });
-  // });
+  // when the client emits 'typing', we broadcast it to others
+  socket.on('typing', () => {
+    socket.broadcast.emit('typing', {
+      username: socket.username
+    });
+  });
 
-  // // when the client emits 'stop typing', we broadcast it to others
-  // socket.on('stop typing', () => {
-  //   socket.broadcast.emit('stop typing', {
-  //     username: socket.username
-  //   });
-  // });
+  // when the client emits 'stop typing', we broadcast it to others
+  socket.on('stop typing', () => {
+    socket.broadcast.emit('stop typing', {
+      username: socket.username
+    });
+  });
 
-  // // when the client emits 'mouse activity', we broadcast it to others
-  // socket.on('mouse activity', (data) => {
-  //   socket.broadcast.emit('all mouse activity', {
-  //     coords: data,
-  //     user: socket.username,
-  //     id: socket.id
-  //   });
-  //   // console.log(data)
-  // });
+  // when the client emits 'mouse activity', we broadcast it to others
+  socket.on('mouse activity', (data) => {
+    socket.broadcast.emit('all mouse activity', {
+      coords: data,
+      user: socket.username,
+      id: socket.id
+    });
+    // console.log(data)
+  });
 
 
 

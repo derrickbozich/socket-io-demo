@@ -7,13 +7,13 @@ const RoomSelection = ({ userId }) => {
     const { room, roomId } = useParams();
 
     return (
-        <main>
+        <>
             <p> room:  {room}</p>
             <p> {roomId}</p>
             <p> {userId}</p>
             <Chat />
 
-        </main>
+        </>
     );
 };
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-// import { Button, TextField } from '@material-ui/core';
+import { Box, TextField, Button} from '@material-ui/core';
 import { SocketContext } from '../app/context/socketProvider';
 import Drawer from '../Drawer';
 import SignUp from '../SignUp';
@@ -15,18 +15,36 @@ import Typography from '@mui/material/Typography';
 const Chat = () => {
     const socket = useContext(SocketContext);
     const [users, setUsers] = useState([]);
+    const [announcements, setAnnouncements] = useState([]);
     const [isConnected, setIsConnected] = useState(false);
+    const [input, setInput] = React.useState('Cat in the Hat');
+    const [messages, setMessages] = React.useState([]);
+
+
+    const handleChange = (event) => {
+        setInput(event.target.value);
+    };
+
+   
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        // const data = new FormData(event.currentTarget);
+        socket.emit('new message',  input );
+        setInput('');
+      
+    };
 
     useEffect(() => {
 
         socket.on("users", (serverUsers) => {
-            console.log('serverUsers', serverUsers)
+            // console.log('serverUsers', serverUsers)
 
             // Set current user
             serverUsers.forEach((user) => {
                 user.self = user.id === socket.id;
             });
-            
+
             // put the current user first, and then sort by username
             serverUsers = serverUsers.sort((a, b) => {
                 if (a.self) return -1;
@@ -41,12 +59,27 @@ const Chat = () => {
             setIsConnected(true);
         });
 
+        socket.on('user joined', ({ username, id }) => {
+            const msg = `${username} joined the chat - ${id}`;
+            setAnnouncements(prev => [...prev, msg])
+            console.log('announcements',announcements)
+        })
+
+        socket.on('new message', ({ message, username}) => {
+            setMessages(prev => [...prev, message])
+            console.log('messages', messages)
+        })
+
 
         return () => {
-            socket.off('connect');
-            socket.off('disconnect');
+            // socket.off('connect');
+            // socket.off('disconnect');
+            // socket.off('users');
+            // socket.off('user joined');
+            // socket.off('new message');
+            socket.removeAllListeners();
         };
-    }, [socket, users]);
+    });
 
 
     const usersList = (
@@ -73,11 +106,81 @@ const Chat = () => {
         </div>
     );
 
-    return (
-        <Drawer usersList={usersList}>
-            {isConnected === false && <SignUp />}
+    const announcementsList = (
+        <div>
+            <List>
+                {announcements.map((announcement, index) => (
+                    <ListItem key={index} >
+                        <ListItemText >
+                            <Typography variant="body1">
+                                {announcement}
+                            </Typography>
+                        </ListItemText>
+                    </ListItem>
+                ))}
+            </List>
+        </div>
+    );
 
-        </Drawer>
+    const messagesList = (
+        <div>
+            <List>
+                {messages.map((message, index) => (
+                    <ListItem key={index} >
+                        <ListItemText >
+                            <Typography variant="body1">
+                                {message}
+                            </Typography>
+                        </ListItemText>
+                    </ListItem>
+                ))}
+            </List>
+        </div>
+    );
+
+    const style = {
+        marginLeft: '100px'
+    };
+
+    const textFieldStyle = {
+        position: 'fixed',
+        bottom: 0
+    }
+
+    const textField = (
+        <Box
+            component="form"
+            sx={{
+                '& > :not(style)': { m: 1, width: '25ch' },
+            }}
+            noValidate
+            autoComplete="off"
+            onSubmit={handleSubmit}
+        >
+            <TextField
+                id="outlined-name"
+                label="Enter a message"
+                value={input}
+                onChange={handleChange}
+            />
+           
+        </Box>
+    )
+
+    return (
+        <>
+            <Drawer usersList={usersList}>
+                {isConnected === false && <SignUp />}
+            </Drawer>
+            <div style={style}>
+                {announcementsList}
+                {messagesList}
+                <div style={textFieldStyle}>
+                    {textField}
+                    
+                </div>
+            </div>
+        </>
     );
 };
 
