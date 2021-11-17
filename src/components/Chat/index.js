@@ -62,12 +62,10 @@ const Chat = () => {
         socket.on('user joined', ({ username, id }) => {
             const msg = `${username} joined the chat - ${id}`;
             setAnnouncements(prev => [...prev, msg])
-            console.log('announcements',announcements)
         })
 
         socket.on('new message', ({ message, username}) => {
-            setMessages(prev => [...prev, message])
-            console.log('messages', messages)
+            setMessages(prev => [...prev, {message, username}])
         })
 
 
@@ -128,8 +126,11 @@ const Chat = () => {
                 {messages.map((message, index) => (
                     <ListItem key={index} >
                         <ListItemText >
+                            <Typography variant="h3">
+                                {message.username}
+                            </Typography>
                             <Typography variant="body1">
-                                {message}
+                                {message.message}
                             </Typography>
                         </ListItemText>
                     </ListItem>
