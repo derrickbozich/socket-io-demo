@@ -19,6 +19,8 @@ const Chat = () => {
     const [isConnected, setIsConnected] = useState(false);
     const [input, setInput] = React.useState('Cat in the Hat');
     const [messages, setMessages] = React.useState([]);
+    const [selectedUser, setSelectedUser] = React.useState(false);
+
 
 
 
@@ -27,14 +29,35 @@ const Chat = () => {
         setInput(event.target.value);
     };
 
-   
+    const handleUserClick = (event) => {
+        const id = event.currentTarget.dataset.userid;
+        setSelectedUser(findUser(id));
+        console.log('user', selectedUser )
+        console.log('messages', getCurrentMessagesWith(id))
+    };
+
+    const findUser = (id) => {
+        return users.find((user) => user.userID === id);
+    };
+
+    const getCurrentUser = (id) => {
+        return users.find((user) => user.userID === socket.userID);
+    };
+
+    const getCurrentMessagesWith = (otherUserID) => {
+
+        return findUser(getCurrentUser().userID).messages
+                .filter(message => message.from === otherUserID || message.to === otherUserID )
+    }
+
+  
+
+
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        // const data = new FormData(event.currentTarget);
-        socket.emit('new message',  input );
+        socket.emit('private message',  {content: input, to: selectedUser.userID} );
         setInput('');
-      
     };
 
     useEffect(() => {
@@ -43,7 +66,7 @@ const Chat = () => {
 
             // Set current user
             serverUsers.forEach((user) => {
-                user.self = user.id === socket.id;
+                user.self = user.userID === socket.userID;
             });
 
             // put the current user first, and then sort by username
@@ -85,6 +108,10 @@ const Chat = () => {
             }
         });
 
+        socket.on("private message", (message) => {
+            console.log('private message', message)
+        });
+
 
         return () => {
             // socket.off('connect');
@@ -101,8 +128,8 @@ const Chat = () => {
         <div>
 
             <List>
-                {users.map(({ username, self, connected, id }, index) => (
-                    <ListItem button key={index} id={id} >
+                {users.map(({ username, self, connected, userID }, index) => (
+                    <ListItem button key={index} data-userid={userID} onClick={handleUserClick} >
                         <ListItemIcon>
                             < PersonOutlineIcon />
                         </ListItemIcon>
@@ -193,10 +220,10 @@ const Chat = () => {
             <div style={style}>
                 {announcementsList}
                 {messagesList}
-                <div style={textFieldStyle}>
+                {selectedUser ? (<div style={textFieldStyle}>
                     {textField}
-                    
-                </div>
+                </div>) : ''}
+                
             </div>
         </>
     );

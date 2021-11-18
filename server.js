@@ -16,9 +16,9 @@ const io = require('socket.io')({
 });
 
 // TO clear db
-redisClient.flushdb(function (err, succeeded) {
-  console.log(succeeded); // will be true if successfull
-});
+// redisClient.flushdb(function (err, succeeded) {
+//   console.log(succeeded); // will be true if successfull
+// });
 
 // const { setupWorker } = require("@socket.io/sticky");
 const crypto = require("crypto");
@@ -120,12 +120,14 @@ io.on("connection", async (socket) => {
 
   // forward the private message to the right recipient (and to other tabs of the sender)
   socket.on("private message", ({ content, to }) => {
+    console.log('in pm', content, to)
     const message = {
       content,
       from: socket.userID,
       to,
     };
     socket.to(to).to(socket.userID).emit("private message", message);
+    socket.emit("private message", message);
     messageStore.saveMessage(message);
   });
 
