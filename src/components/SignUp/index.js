@@ -14,6 +14,16 @@ import { SocketContext } from '../app/context/socketProvider';
 const SignUp = ({handleClose}) => {
     const socket = useContext(SocketContext);
 
+    const sessionID = localStorage.getItem("sessionID");
+
+    if (sessionID) {
+        // this.usernameAlreadySelected = true;
+        socket.auth = { sessionID };
+        socket.connect();
+    }
+
+
+
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
