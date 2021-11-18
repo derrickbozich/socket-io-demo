@@ -40,7 +40,6 @@ const Chat = () => {
     useEffect(() => {
 
         socket.on("users", (serverUsers) => {
-            // console.log('serverUsers', serverUsers)
 
             // Set current user
             serverUsers.forEach((user) => {

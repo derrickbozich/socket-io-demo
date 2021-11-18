@@ -15,10 +15,10 @@ const io = require('socket.io')({
   }
 });
 
-// TO clear db cache
-// redisClient.flushdb(function (err, succeeded) {
-//   console.log(succeeded); // will be true if successfull
-// });
+// TO clear db
+redisClient.flushdb(function (err, succeeded) {
+  console.log(succeeded); // will be true if successfull
+});
 
 // const { setupWorker } = require("@socket.io/sticky");
 const crypto = require("crypto");
