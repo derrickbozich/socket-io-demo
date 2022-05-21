@@ -1,7 +1,6 @@
 import React from 'react';
 import SEO from '../SEO'
 import Header from '../Header'
-import Container from '@mui/material/Container';
 
 
 const Layout = ({ children }) => {
@@ -10,10 +9,8 @@ const Layout = ({ children }) => {
            
             <SEO title='demo title' />
             <Header />
-           
-            <Container >
-                <main>{children}</main>
-            </Container>
+            <main>{children}</main>
+        
         </>
     )
 }

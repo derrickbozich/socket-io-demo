@@ -11,7 +11,8 @@ const RoomSelection = ({ userId }) => {
             <p> room:  {room}</p>
             <p> {roomId}</p>
             <p> {userId}</p>
-            <Chat />
+            {/* <Chat /> */}
+            
 
         </>
     );

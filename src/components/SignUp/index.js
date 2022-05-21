@@ -8,21 +8,8 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { SocketContext } from '../app/context/socketProvider';
 
-
-
-
 const SignUp = ({handleClose}) => {
     const socket = useContext(SocketContext);
-
-    const sessionID = localStorage.getItem("sessionID");
-
-    if (sessionID) {
-        // this.usernameAlreadySelected = true;
-        socket.auth = { sessionID };
-        socket.connect();
-    }
-
-
 
     const handleSubmit = (event) => {
         event.preventDefault();

@@ -14,31 +14,36 @@ import { SocketContext, socket } from './context/socketProvider';
 
 
 export default function App() {
-  const [userId, setUserId] = useState('');
+  // const [userId, setUserId] = useState('');
+  // const [rooms, setRooms] = useState([]);
 
-  useEffect(() => {
-    socket.on('set userId', (userId) => {
-      setUserId(userId);
-    });
-  }, []);
+  // console.log('socket', socket)
+
+  // useEffect(() => {
+  //   socket.emit('rooms', (rooms) => {
+  //     setRooms(rooms);
+  //   });
+  // }, []);
   return (
-    < Layout>
-      <Router>
-        <Switch>
-          <Route exact path="/" component={Home} />
-          <SocketContext.Provider value={socket}>
+    <SocketContext.Provider value={socket}>
+      < Layout>
+        <Router>
+          <Switch>
+            <Route exact path="/" component={Home} />
+
             <Route exact path="/rooms">
-              <RoomSelection userId={userId} />
+              {/* <RoomSelection userId={userId} /> */}
             </Route>
             <Route exact path="/rooms/:room">
-              <Room userId={userId} />
+              {/* <Room userId={userId} /> */}
             </Route>
             <Route exact path="/rooms/:room/:roomId">
-              <Room userId={userId} />
+              {/* <Room userId={userId} /> */}
             </Route>
-          </SocketContext.Provider>
-        </Switch>
-      </Router>
-    </Layout>
+
+          </Switch>
+        </Router>
+      </Layout>
+    </SocketContext.Provider>
   );
 }

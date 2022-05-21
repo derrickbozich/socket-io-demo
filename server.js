@@ -15,7 +15,7 @@ const io = require('socket.io')({
   }
 });
 
-// TO clear db
+// To clear cache
 // redisClient.flushdb(function (err, succeeded) {
 //   console.log(succeeded); // will be true if successfull
 // });
@@ -63,8 +63,7 @@ io.use(async (socket, next) => {
 });
 
 io.on("connection", async (socket) => {
-  // console.log('connect')
-  // persist session
+  // store session in memory
   sessionStore.saveSession(socket.sessionID, {
     userID: socket.userID,
     username: socket.username,
@@ -107,8 +106,9 @@ io.on("connection", async (socket) => {
       messages: messagesPerUser.get(session.userID) || [],
     });
   });
-  socket.emit("users", users);
-  // console.log('users', users  )
+  socket.emit("users", users.filter(user => user.connected === true));
+  // io.emit("users", users.filter(user => user.connected === true));
+  console.log('users', users  )
 
   // notify existing users
   socket.broadcast.emit("user connected", {
