@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Box, TextField, Button } from '@material-ui/core';
+import { Box, TextField} from '@material-ui/core';
 import { SocketContext } from '../app/context/socketProvider';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Typography from '@mui/material/Typography';
-
 
 const Chat = ({ selectedUser }) => {
     const socket = useContext(SocketContext);
@@ -18,56 +17,23 @@ const Chat = ({ selectedUser }) => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        // socket.emit('private message', { content: input, to: selectedUser.userID });
+        socket.emit('private message', { content: input, to: selectedUser.userID });
         setInput('');
     };
+    console.log('messages', messages)
 
     useEffect(() => {
 
-
-        socket.on('new message', ({ message, username }) => {
-            setMessages(prev => [...prev, { message, username }])
-        })
-
         socket.on("private message", (message) => {
-            console.log('private message', message)
+            setMessages(prev => [...prev, message])
+            console.log('client on private message', message)
         });
 
-
-        return () => {
-            // socket.off('connect');
-            // socket.off('disconnect');
-            // socket.off('users');
-            // socket.off('user joined');
-            // socket.off('new message');
-            socket.removeAllListeners();
+        return () => {           
+            socket.off('private message');
         };
-    }, []);
+    }, [socket]);
 
-
-
-
-
-    const messagesList = (
-        <div>
-            <List>
-                {messages.map((message, index) => (
-                    <ListItem key={index} >
-                        <ListItemText >
-                            <Typography variant="h3">
-                                {message.username}
-                            </Typography>
-                            <Typography variant="body1">
-                                {message.message}
-                            </Typography>
-                        </ListItemText>
-                    </ListItem>
-                ))}
-            </List>
-        </div>
-    );
-
-  
 
 
 
@@ -93,12 +59,21 @@ const Chat = ({ selectedUser }) => {
 
     return (
         <Box>
-
-          
-                {messagesList}
-                {textField}
-
-           
+            <List>
+                {messages.map((message, index) => (
+                    <ListItem key={index} >
+                        <ListItemText >
+                            <Typography variant="h3">
+                                {message.content}
+                            </Typography>
+                            <Typography variant="body1">
+                                {message.from}
+                            </Typography>
+                        </ListItemText>
+                    </ListItem>
+                ))}
+            </List>
+            {textField}
         </Box>
     );
 };

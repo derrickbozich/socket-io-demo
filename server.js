@@ -107,8 +107,6 @@ io.on("connection", async (socket) => {
     });
   });
   socket.emit("users", users.filter(user => user.connected === true));
-  // io.emit("users", users.filter(user => user.connected === true));
-  console.log('users', users  )
 
   // notify existing users
   socket.broadcast.emit("user connected", {
@@ -120,14 +118,13 @@ io.on("connection", async (socket) => {
 
   // forward the private message to the right recipient (and to other tabs of the sender)
   socket.on("private message", ({ content, to }) => {
-    console.log('in pm', content, to)
     const message = {
       content,
       from: socket.userID,
       to,
     };
     socket.to(to).to(socket.userID).emit("private message", message);
-    socket.emit("private message", message);
+    // socket.emit("private message", message);
     messageStore.saveMessage(message);
   });
 

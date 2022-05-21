@@ -9,7 +9,7 @@ export const socket = io(URL, { autoConnect: false });
 export const SocketContext = createContext();
 
 socket.onAny((event, ...args) => {
-    console.log(event, args);
+    // console.log(event, args);
 });
 
 socket.on("connect_error", (err) => {
