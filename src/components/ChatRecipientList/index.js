@@ -1,18 +1,18 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { List, ListItem, ListItemIcon, ListItemText, Typography } from '@material-ui/core';
+import { List, ListItem, ListItemIcon, ListItemText, Typography } from "@mui/material";
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 
-function ChatRecipientList({ users, handleClick, selectedUser }) {
+function ChatRecipientList({ users, handleClick, selectedChatRecipient }) {
 
-    console.log('selected', selectedUser)
+    console.log('selected', selectedChatRecipient)
 
 
     if (users == null) return null
 
     const itemStyle = (userID) => {
         return {
-            backgroundColor: userID === selectedUser.userID ? 'red' : 'white'
+            backgroundColor: userID === selectedChatRecipient.userID ? 'aqua' : 'white'
 
         }
 
@@ -21,7 +21,7 @@ function ChatRecipientList({ users, handleClick, selectedUser }) {
     return (
         <List>
             {users.filter(user => user.connected === true).map(({ username, self, connected, userID }, index) => (
-                <ListItem button key={index} data-userid={userID} onClick={handleClick} sx={{ backgroundColor: "rgb(210,248,255)" }}>
+                <ListItem button key={index} data-userid={userID} onClick={handleClick} sx={{...itemStyle(userID)}}>
                     <ListItemIcon>
                         < PersonOutlineIcon />
                     </ListItemIcon>

@@ -122,9 +122,10 @@ io.on("connection", async (socket) => {
       content,
       from: socket.userID,
       to,
+      timestamp: new Date().toUTCString()
     };
-    socket.to(to).to(socket.userID).emit("private message", message);
-    // socket.emit("private message", message);
+    socket.to(to).emit("private message", message); // send to recipient
+    socket.emit("private message", message); // send to yourself
     messageStore.saveMessage(message);
   });
 

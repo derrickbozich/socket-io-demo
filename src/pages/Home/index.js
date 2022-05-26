@@ -10,11 +10,17 @@ import { findUser } from '../../util/user';
 export default function Home() {
 
     const [connected, users] = useSocketListeners();
-    const [selectedUser, setSelectedUser] = React.useState({userId: null});
+    const [selectedChatRecipient, setSelectedChatRecipient] = React.useState({userId: null});
+
+    React.useEffect(() => {
+        if (selectedChatRecipient.userID == null &&  users != null ){
+            setSelectedChatRecipient(users[0]);
+        }
+    }, [users, selectedChatRecipient.userID])
 
     const handleUserClick = (event) => {
         const id = event.currentTarget.dataset.userid;
-        setSelectedUser(findUser(id, users));
+        setSelectedChatRecipient(findUser(id, users));
     };
 
     const wrapStyles = {
@@ -28,12 +34,12 @@ export default function Home() {
     return (
         <Container maxWidth={false} sx={{ ...wrapStyles }}>
             <Box>
-                <Chat selectedUser={selectedUser} />
+                <Chat selectedChatRecipient={selectedChatRecipient} />
             </Box>
             <Box>
                 <ChatRecipientList
                     users={users}
-                    selectedUser={selectedUser}
+                    selectedChatRecipient={selectedChatRecipient}
                     handleClick={handleUserClick}
                 />
             </Box>

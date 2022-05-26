@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Box, TextField} from '@material-ui/core';
+import { Box, TextField } from '@material-ui/core';
 import { SocketContext } from '../app/context/socketProvider';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
+import MessagesList from '../MessagesList';
 import Typography from '@mui/material/Typography';
 
-const Chat = ({ selectedUser }) => {
+const Chat = ({ selectedChatRecipient }) => {
     const socket = useContext(SocketContext);
     const [input, setInput] = useState('Cat in the Hat');
     const [messages, setMessages] = useState([]);
@@ -15,12 +13,13 @@ const Chat = ({ selectedUser }) => {
         setInput(event.target.value);
     };
 
+    console.log('socket', socket)
+
     const handleSubmit = (event) => {
         event.preventDefault();
-        socket.emit('private message', { content: input, to: selectedUser.userID });
+        socket.emit('private message', { content: input, to: selectedChatRecipient.userID });
         setInput('');
     };
-    console.log('messages', messages)
 
     useEffect(() => {
 
@@ -29,13 +28,10 @@ const Chat = ({ selectedUser }) => {
             console.log('client on private message', message)
         });
 
-        return () => {           
+        return () => {
             socket.off('private message');
         };
     }, [socket]);
-
-
-
 
     const textField = (
         <Box
@@ -58,23 +54,14 @@ const Chat = ({ selectedUser }) => {
     )
 
     return (
-        <Box>
-            <List>
-                {messages.map((message, index) => (
-                    <ListItem key={index} >
-                        <ListItemText >
-                            <Typography variant="h3">
-                                {message.content}
-                            </Typography>
-                            <Typography variant="body1">
-                                {message.from}
-                            </Typography>
-                        </ListItemText>
-                    </ListItem>
-                ))}
-            </List>
+        <>
+            <Typography component='h1'>
+                conversation with {selectedChatRecipient.username}
+            </Typography>
+            <MessagesList messages={messages} currentUserID={socket.userID} />
             {textField}
-        </Box>
+        </>
+
     );
 };
 
