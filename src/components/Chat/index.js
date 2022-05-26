@@ -13,7 +13,7 @@ const Chat = ({ selectedChatRecipient }) => {
         setInput(event.target.value);
     };
 
-    console.log('socket', socket)
+    // console.log('socket', socket)
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -25,7 +25,7 @@ const Chat = ({ selectedChatRecipient }) => {
 
         socket.on("private message", (message) => {
             setMessages(prev => [...prev, message])
-            console.log('client on private message', message)
+            // console.log('client on private message', message)
         });
 
         return () => {
@@ -58,7 +58,7 @@ const Chat = ({ selectedChatRecipient }) => {
             <Typography component='h1'>
                 conversation with {selectedChatRecipient.username}
             </Typography>
-            <MessagesList messages={messages} currentUserID={socket.userID} />
+            <MessagesList messages={messages} currentUserID={socket.userID} selectedChatRecipient={selectedChatRecipient} />
             {textField}
         </>
 

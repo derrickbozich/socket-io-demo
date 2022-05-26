@@ -1,11 +1,23 @@
 import React from 'react';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
-const MessagesList = ({messages, currentUserID}) => {
+const MessagesList = ({messages, currentUserID, selectedChatRecipient}) => {
+
+    messages = messages.filter(message => {
+        const isSelf = currentUserID === selectedChatRecipient.userID;
+        const isFromCurrentToRecipient = message.from === currentUserID && message.to === selectedChatRecipient.userID;
+        const isFromRecipientToCurrent = message.from === selectedChatRecipient.userID && message.to === currentUserID;
+
+        if (isSelf) {
+            return message.to === message.from
+        } else {
+            return isFromCurrentToRecipient || isFromRecipientToCurrent;
+        }
+        
+    })
     const itemStyle = (id) => (
         {
             justifyContent: id === currentUserID ? 'flex-start': 'flex-end',
@@ -28,8 +40,6 @@ const MessagesList = ({messages, currentUserID}) => {
                             <Typography variant="p" component='p' color='white' sx={{ ...messageStyle(message.to) }}>
                                 {message.content}
                             </Typography>
-                            
-
                         </Box>
                          
                         {/* </ListItemText> */}

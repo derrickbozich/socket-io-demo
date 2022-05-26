@@ -5,7 +5,7 @@ import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 
 function ChatRecipientList({ users, handleClick, selectedChatRecipient }) {
 
-    console.log('selected', selectedChatRecipient)
+    // console.log('selected', selectedChatRecipient)
 
 
     if (users == null) return null
