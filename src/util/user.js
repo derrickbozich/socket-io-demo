@@ -1,4 +1,3 @@
-
 export const findUser = (id, users) => {
     return users.find((user) => user.userID === id);
 };

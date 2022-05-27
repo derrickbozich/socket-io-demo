@@ -1,14 +1,16 @@
-const { createServer } = require("http");
+// const { createServer } = require("http");
 const { Server } = require("socket.io");
 const Client = require("socket.io-client");
+const { server} = require('../../../server');
 
 describe("my awesome project", () => {
     let io, serverSocket, clientSocket;
+    // let serverSocket, clientSocket;
 
     beforeAll((done) => {
-        const httpServer = createServer();
+        const httpServer = server.httpServer;
         io = new Server(httpServer);
-        httpServer.listen(() => {
+        server.init(() => {
             const port = httpServer.address().port;
             clientSocket = new Client(`http://localhost:${port}`);
             io.on("connection", (socket) => {
@@ -21,6 +23,7 @@ describe("my awesome project", () => {
     afterAll(() => {
         io.close();
         clientSocket.close();
+        server.close();
     });
 
     test("should work", (done) => {
